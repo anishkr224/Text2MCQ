@@ -1,0 +1,124 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate MCQs</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .container {
+            text-align: center;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff;
+            margin-top: 100px;
+        }
+        .progress {
+            margin-top: 20px;
+            height: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="mb-4">MCQ Generator</h1>
+    <p class="lead">Generate MCQs based on provided text. Enter text manually or upload a PDF/TXT file.</p>
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% elif mcqs %}
+    <div class="alert alert-success" role="alert">
+        MCQs generated successfully! View your MCQs below.
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="text">Or Enter Text:</label>
+            <textarea class="form-control" id="text" name="text" rows="5" placeholder="Enter your text here..." oninput="adjustQuestionOptions()" aria-label="Text Input"></textarea>
+        </div>
+
+        <div class="form-group" style="text-align: center;">
+            <label for="file">Upload File(s) (PDF or TXT)</label>
+            <input type="file" class="form-control-file" id="file" name="files[]" multiple style="margin: 0 auto;" onchange="displayFileNames(); adjustQuestionOptions();" aria-describedby="fileHelp" aria-label="File Upload">
+            <small id="fileHelp" class="form-text text-muted">Selected Files: <span id="fileNames">None</span></small>
+        </div>
+
+        <div class="form-group">
+            <label for="num_questions">Number of Questions:</label>
+            <select class="form-control" id="num_questions" name="num_questions" style="margin: 0 auto; width: 20%; max-width: 150px; background:black; color:white;" aria-label="Select Number of Questions">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-success btn-lg" style="width: 50%; max-width: 300px; margin: 20px auto;">Generate MCQs</button>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Generating MCQs...</div>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.11/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function displayFileNames() {
+        const fileInput = document.getElementById('file');
+        const fileNames = Array.from(fileInput.files).map(file => file.name).join(', ');
+        document.getElementById('fileNames').textContent = fileNames || 'None';
+    }
+
+    function adjustQuestionOptions() {
+        const text = document.getElementById('text').value.trim();
+        const files = document.getElementById('file').files;
+        let totalLength = text.length;
+
+        for (let file of files) {
+            if (file.size) totalLength += file.size / 1000;
+        }
+
+        const numQuestionsSelect = document.getElementById('num_questions');
+        Array.from(numQuestionsSelect.options).forEach(option => {
+            option.disabled = totalLength < option.value * 100;
+            if (option.disabled) option.style.display = "none";
+            else option.style.display = "block";
+        });
+    }
+
+    function validateForm() {
+        const text = document.getElementById('text').value.trim();
+        const files = document.getElementById('file').files;
+
+        if (!text && files.length === 0) {
+            alert('Please enter text or upload a file.');
+            return false;
+        }
+
+        document.querySelector('.progress').style.display = 'block';
+        return true;
+    }
+</script>
+
+</body>
+</html>

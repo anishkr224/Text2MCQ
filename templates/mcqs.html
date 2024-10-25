@@ -1,0 +1,126 @@
+<!-- mcqs.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated MCQs</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 5%;
+        }
+        .card-body {
+            text-align: left;
+        }
+        .correct-answer {
+            display: none; /* Hide correct answers initially */
+        }
+        .correct {
+            background-color: #008000 !important; /* Green */
+            color: white;
+        }
+        .incorrect {
+            background-color: #dc3545 !important; /* Red */
+            color: white;
+        }
+        .unanswered {
+            background-color: #ffc107 !important; /* Yellow */
+            color: white;
+        }
+        .user-answer {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Main Heading -->
+<h1 class="mt-4 text-center">Generated MCQs</h1>
+
+<!-- Container for all MCQs -->
+<div class="container" id="mcqs-container">
+    {% for index, mcq in mcqs %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <!-- Display the question -->
+                <h5 class="card-title" id="question{{ index + 1 }}">Q{{ index }}: {{ mcq[0] }}?</h5>
+                <form aria-labelledby="question{{ index + 1 }}">
+                    {% set options = ['A', 'B', 'C', 'D'] %}
+                    {% set num_choices = mcq[1]|length %}
+                    <!-- Iterate over the options and display them as radio buttons -->
+                    {% for choice_index in range(num_choices) %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="answer{{ index }}" id="choice{{ index }}{{ choice_index }}" value="{{ options[choice_index] }}">
+                            <label class="form-check-label" for="choice{{ index }}{{ choice_index }}">
+                                {{ options[choice_index] }}: {{ mcq[1][choice_index] }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </form>
+                <!-- Show correct answer after submission -->
+                <small class="text-muted correct-answer">Correct Answer: {{ mcq[2] }} | Your Answer: <span class="user-answer">Unanswered</span></small>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- Show Results Button and Score Display -->
+    <div class="text-center mt-4">
+        <button id="show-results-btn" class="btn btn-primary btn-lg" aria-label="Show Results">Show Results</button>
+        <h4 id="score" class="mt-4" aria-live="polite"></h4>
+    </div>
+</div>
+
+<!-- Script to handle results display and score calculation -->
+<script>
+    document.getElementById('show-results-btn').addEventListener('click', function() {
+        let score = 0;
+        const totalQuestions = {{ mcqs|length }};
+        const correctAnswers = document.getElementsByClassName('correct-answer');
+
+        // Iterate over all questions and check selected answers
+        document.querySelectorAll('.card').forEach((questionCard, index) => {
+            const selectedOption = questionCard.querySelector('input[type="radio"]:checked');
+            const correctAnswer = correctAnswers[index].textContent.split("|")[0].split(":")[1].trim();
+            const allOptions = questionCard.querySelectorAll('input[type="radio"]');
+
+            if (selectedOption) {
+                const userAnswer = selectedOption.value;
+                questionCard.querySelector('.user-answer').textContent = userAnswer;
+
+                // Check if the answer is correct or incorrect
+                if (userAnswer === correctAnswer) {
+                    selectedOption.closest('.form-check').classList.add('correct');  // Correct: Highlight in green
+                    score++;
+                } else {
+                    selectedOption.closest('.form-check').classList.add('incorrect');  // Incorrect: Highlight in red
+                }
+            } else {
+                questionCard.querySelector('.card-body').classList.add('unanswered'); // Unanswered: Highlight in yellow
+            }
+
+            // Highlight the correct option in green
+            allOptions.forEach(option => {
+                if (option.value === correctAnswer) {
+                    option.closest('.form-check').classList.add('correct');
+                }
+            });
+        });
+
+        // Reveal correct answers for all questions
+        Array.from(correctAnswers).forEach(answer => answer.style.display = 'block');
+
+        // Hide "Show Results" button after results are shown
+        this.style.display = 'none';
+
+        // Display the score
+        document.getElementById('score').textContent = `Your Score: ${score}/${totalQuestions}`;
+    });
+</script>
+
+</body>
+</html>
