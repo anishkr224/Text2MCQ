@@ -7,6 +7,7 @@ Implemented **natural language processing (NLP)** techniques with **SpaCy** for 
 **Enhanced efficiency** by integrating the **PyPDF2** library for PDF text extraction and automated question generation, reducing manual input requirements by over **80%**.
 
 **Validated user interactions** with a scoring system and feedback logic in JavaScript, achieving a fully functional interactive quiz interface with real-time feedback.
+
 **Technical Skills Applied**: Python, NLP (spaCy), PyPDF2, Flask, Bootstrap, HTML/CSS/JS.
 
 
