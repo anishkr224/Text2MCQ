@@ -1,4 +1,4 @@
-# Text2MCQ: Automated MCQ Generation System Using NLP
+# Automated MCQ Generation System Using NLP
 
 **Project Overview**: Developed an automated MCQ (Multiple Choice Question) generator that leverages Natural Language Processing (NLP) techniques to parse text input, extract key entities, and create contextually relevant question-answer choices.
 
