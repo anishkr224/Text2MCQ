@@ -1,8 +1,6 @@
 services:
   - type: web
-    name: Text2MCQ
+    name: text2mcq
     env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.7/en_core_web_sm-3.8.7-py3-none-any.whl
+    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm"
     startCommand: gunicorn app:app
