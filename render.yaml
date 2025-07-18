@@ -2,5 +2,5 @@ services:
   - type: web
     name: text2mcq
     env: python
-    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm"
+    buildCommand: "pip install -r requirements.txt"
     startCommand: gunicorn app:app
