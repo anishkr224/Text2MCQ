@@ -1,0 +1,10 @@
+flask
+flask-bootstrap
+PyPDF2
+
+# Do NOT install spaCy via pip here to avoid Windows build errors with blis
+# Instead, install spaCy using Conda:
+# conda install -c conda-forge spacy
+
+# After that, run:
+# python -m spacy download en_core_web_sm
