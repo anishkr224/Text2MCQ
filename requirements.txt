@@ -1,6 +1,8 @@
-flask
+Flask
 flask-bootstrap
+spacy
 PyPDF2
+gunicorn
 
 # Do NOT install spaCy via pip here to avoid Windows build errors with blis
 # Instead, install spaCy using Conda:
